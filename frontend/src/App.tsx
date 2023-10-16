@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import "./App.css";
+import "./app.css";
 import { Field, FieldOption, FieldType, Honor, OnboardingData } from "./type";
 
 function App() {

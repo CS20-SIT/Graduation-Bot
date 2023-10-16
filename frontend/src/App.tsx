@@ -1,8 +1,9 @@
 import { ChangeEvent, useState } from "react";
 import "./app.css";
 import { Field, FieldOption, FieldType, Honor, OnboardingData } from "./type";
-
-function App() {
+import axios from "axios";
+import Swal from "sweetalert2";
+const App = () => {
   const [data, setData] = useState<OnboardingData>({
     lineUserId: "",
     studentId: "",
@@ -179,9 +180,24 @@ function App() {
     const isFormValid =
       document.getElementsByClassName("errorMessage").length === 0;
     if (isFormValid) {
-      alert("submitting form");
+      axios
+        .post("/graduate", data)
+        .then(() => {
+          Swal.fire({
+            title: "Successfully create graduate",
+            icon: "success",
+            showConfirmButton: false,
+          });
+        })
+        .catch((err) => {
+          Swal.fire({
+            title: "Failed to create graduate",
+            html: err.response.data.message,
+            icon: "error",
+            showConfirmButton: false,
+          });
+        });
     }
-    console.log(data);
   };
   return (
     <>
@@ -195,6 +211,6 @@ function App() {
       </div>
     </>
   );
-}
+};
 
 export default App;

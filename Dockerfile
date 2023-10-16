@@ -18,7 +18,7 @@ USER node
 
 FROM node:18-alpine As frontend-build 
 ENV ci=true
-RUN npm i -g pnpm
+RUN npm i -g pnpm@7
 WORKDIR /usr/src/app
 COPY --chown=node:node ./frontend/pnpm-lock.yaml ./
 RUN pnpm fetch --prod

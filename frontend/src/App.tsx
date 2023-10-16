@@ -190,7 +190,7 @@ function App() {
       <div className="form">{graduateFields.map(renderField)}</div>
       <h2>Line Information</h2>
       <div className="form">{lineFields.map(renderField)}</div>
-      <div>
+      <div className="form-button">
         <button onClick={handleSubmit}>Submit</button>
       </div>
     </>

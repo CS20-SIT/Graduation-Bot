@@ -6,6 +6,8 @@ import { GraduateModule } from './graduate/graduate.module'
 import { LineApiModule } from './lineapi/lineapi.module'
 import { PrismaService } from './prisma/prisma.service'
 import { PrismaModule } from './prisma/prisma.module'
+import { ServeStaticModule } from '@nestjs/serve-static'
+import { join } from 'path'
 
 @Module({
 	imports: [
@@ -15,6 +17,9 @@ import { PrismaModule } from './prisma/prisma.module'
 		ConfigModule.forRoot({
 			isGlobal: true,
 			envFilePath: ['.env', '/config/.env']
+		}),
+		ServeStaticModule.forRoot({
+			rootPath: join(__dirname, '..', 'client')
 		})
 	],
 	controllers: [AppController],

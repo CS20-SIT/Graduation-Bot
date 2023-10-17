@@ -1,18 +1,19 @@
 export enum Honor {
   First = "First Class Honors",
   Second = "Second Class Honors",
+  None = "None"
 }
 export interface OnboardingData {
   lineUserId: string;
   studentId: string;
   firstName: string;
   lastName: string;
-  nickName: string;
+  nickName: string | null;
   mobileNo: string;
   honor: Honor | null;
   currentJob: string | null;
   currentCompany: string | null;
-  fallbackMessage: string;
+  fallbackMessage: string | null;
   channelAccessToken: string;
 }
 export enum FieldType {

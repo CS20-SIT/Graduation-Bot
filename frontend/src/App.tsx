@@ -4,7 +4,7 @@ import { Field, FieldOption, FieldType, Honor, OnboardingData } from "./type";
 import axios from "axios";
 import Swal from "sweetalert2";
 const App = () => {
-  const [data, setData] = useState<OnboardingData>({
+  const defaultOnboardingData: OnboardingData = {
     lineUserId: "",
     studentId: "",
     firstName: "",
@@ -16,7 +16,8 @@ const App = () => {
     currentCompany: null,
     fallbackMessage: "",
     channelAccessToken: "",
-  });
+  };
+  const [data, setData] = useState<OnboardingData>(defaultOnboardingData);
   const [isFormValidated, setIsFormValidated] = useState<boolean>(false);
   const graduateFields: Array<Field> = [
     {
@@ -56,8 +57,8 @@ const App = () => {
       type: FieldType.Select,
       options: [
         {
-          label: "None",
-          value: "",
+          label: Honor.None,
+          value: Honor.None,
         },
         {
           label: Honor.First,
@@ -175,19 +176,32 @@ const App = () => {
       [target.name]: target.value,
     });
   };
+  const preprocessData = (data: OnboardingData): OnboardingData => {
+    return {
+      ...data,
+      nickName: data.nickName === "" ? null : data.nickName,
+      honor: data.honor === Honor.None ? null : data.honor,
+      currentJob: data.currentJob === "" ? null : data.currentJob,
+      currentCompany: data.currentCompany === "" ? null : data.currentCompany,
+      fallbackMessage:
+        data.fallbackMessage === "" ? null : data.fallbackMessage,
+    };
+  };
   const handleSubmit = () => {
     setIsFormValidated(true);
     const isFormValid =
       document.getElementsByClassName("errorMessage").length === 0;
     if (isFormValid) {
       axios
-        .post("/graduate", data)
+        .post("/graduate", preprocessData(data))
         .then(() => {
           Swal.fire({
             title: "Successfully create graduate",
             icon: "success",
             showConfirmButton: false,
           });
+          setData(defaultOnboardingData);
+          setIsFormValidated(false);
         })
         .catch((err) => {
           Swal.fire({

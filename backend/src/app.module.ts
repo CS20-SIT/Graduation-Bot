@@ -8,12 +8,14 @@ import { PrismaService } from './prisma/prisma.service'
 import { PrismaModule } from './prisma/prisma.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
+import { WebhookModule } from './webhook/webhook.module'
 
 @Module({
 	imports: [
 		GraduateModule,
 		LineApiModule,
 		PrismaModule,
+		WebhookModule,
 		ConfigModule.forRoot({
 			isGlobal: true,
 			envFilePath: ['.env', '/config/.env']

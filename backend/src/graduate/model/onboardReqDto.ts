@@ -14,9 +14,13 @@ export class OnboardRequestDto {
 	firstName: string
 	@IsString()
 	lastName: string
+	@IsString()
+	@IsOptional()
+	nickName: string
 	@Length(10)
 	mobileNo: string
 	@IsEnum(Honor)
+	@IsOptional()
 	honor: Honor | null
 	@IsString()
 	@IsOptional()
@@ -25,6 +29,7 @@ export class OnboardRequestDto {
 	@IsOptional()
 	currentCompany: string | null
 	@IsString()
+	@IsOptional()
 	fallbackMessage: string
 	@IsString()
 	channelAccessToken: string

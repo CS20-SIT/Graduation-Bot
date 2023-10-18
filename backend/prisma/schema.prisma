@@ -16,11 +16,12 @@ model Graduate {
   studentId          String  @unique
   firstName          String
   lastName           String
+  nickName           String?
   mobileNo           String
   honor              String?
   currentJob         String?
   currentCompany     String?
-  fallbackMessage    String
+  fallbackMessage    String?
   botUserId          String  @unique
   channelAccessToken String
 

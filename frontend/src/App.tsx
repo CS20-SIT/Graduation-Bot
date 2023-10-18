@@ -1,9 +1,10 @@
 import { ChangeEvent, useState } from "react";
 import "./app.css";
 import { Field, FieldOption, FieldType, Honor, OnboardingData } from "./type";
-
-function App() {
-  const [data, setData] = useState<OnboardingData>({
+import axios from "axios";
+import Swal from "sweetalert2";
+const App = () => {
+  const defaultOnboardingData: OnboardingData = {
     lineUserId: "",
     studentId: "",
     firstName: "",
@@ -15,7 +16,8 @@ function App() {
     currentCompany: null,
     fallbackMessage: "",
     channelAccessToken: "",
-  });
+  };
+  const [data, setData] = useState<OnboardingData>(defaultOnboardingData);
   const [isFormValidated, setIsFormValidated] = useState<boolean>(false);
   const graduateFields: Array<Field> = [
     {
@@ -55,8 +57,8 @@ function App() {
       type: FieldType.Select,
       options: [
         {
-          label: "None",
-          value: "",
+          label: Honor.None,
+          value: Honor.None,
         },
         {
           label: Honor.First,
@@ -174,14 +176,42 @@ function App() {
       [target.name]: target.value,
     });
   };
+  const preprocessData = (data: OnboardingData): OnboardingData => {
+    return {
+      ...data,
+      nickName: data.nickName === "" ? null : data.nickName,
+      honor: data.honor === Honor.None ? null : data.honor,
+      currentJob: data.currentJob === "" ? null : data.currentJob,
+      currentCompany: data.currentCompany === "" ? null : data.currentCompany,
+      fallbackMessage:
+        data.fallbackMessage === "" ? null : data.fallbackMessage,
+    };
+  };
   const handleSubmit = () => {
     setIsFormValidated(true);
     const isFormValid =
       document.getElementsByClassName("errorMessage").length === 0;
     if (isFormValid) {
-      alert("submitting form");
+      axios
+        .post("/graduate", preprocessData(data))
+        .then(() => {
+          Swal.fire({
+            title: "Successfully create graduate",
+            icon: "success",
+            showConfirmButton: false,
+          });
+          setData(defaultOnboardingData);
+          setIsFormValidated(false);
+        })
+        .catch((err) => {
+          Swal.fire({
+            title: "Failed to create graduate",
+            html: err.response.data.message,
+            icon: "error",
+            showConfirmButton: false,
+          });
+        });
     }
-    console.log(data);
   };
   return (
     <>
@@ -195,6 +225,6 @@ function App() {
       </div>
     </>
   );
-}
+};
 
 export default App;

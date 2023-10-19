@@ -3,8 +3,8 @@ import { IMessageHandler } from './IMessageHandler'
 
 export class OwnerTextMessageEventHandler implements IMessageHandler {
 	constructor() {}
-	handle(event: WebhookEvent): Promise<void> {
-		console.log(event)
+	handle(event: WebhookEvent, botUserId: string): Promise<void> {
+		console.log(event, botUserId)
 		return
 	}
 }

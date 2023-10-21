@@ -26,7 +26,7 @@ export class GuestImageMessageHandler implements IMessageHandler {
 		])
 
 		const storageWriteStream = this.storageService.getObjectWriteStream(
-			`${id}_${firstName}/${guestProfile.displayName}_${event.timestamp}.jpg`
+			`${id}_${firstName}/guest_pics/${guestProfile.displayName}_${event.timestamp}.jpg`
 		)
 		await this.pipeStreams(readStream, storageWriteStream)
 	}

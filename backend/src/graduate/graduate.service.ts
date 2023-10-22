@@ -16,4 +16,8 @@ export class GraduateService {
 		})
 		return count > 0
 	}
+
+	async getGraduateByBotUserId(botUserId: string): Promise<Graduate> {
+		return this.prismaService.graduate.findUnique({ where: { botUserId } })
+	}
 }

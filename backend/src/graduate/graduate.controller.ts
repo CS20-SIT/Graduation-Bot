@@ -26,7 +26,7 @@ export class GraduateController {
 		try {
 			const [botInfo, userProfile] = await Promise.all([
 				this.lineApiService.getBotInfo(channelAccessToken),
-				this.lineApiService.getUserProfile(lineUserId, channelAccessToken)
+				this.lineApiService.getUserProfile(channelAccessToken, lineUserId)
 			])
 			return await this.graduateService.createGradute({
 				...body,

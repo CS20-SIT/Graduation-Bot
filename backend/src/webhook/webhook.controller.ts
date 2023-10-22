@@ -30,7 +30,7 @@ export class WebhookController {
 					messageType
 				)
 				if (!!messageHandler) {
-					await messageHandler.handle(event)
+					await messageHandler.handle(event, botUserId)
 				} else {
 					Logger.log(
 						`Unsupported Message Type: isBotOwner=${isBotOwner}, messageType=${messageType}`

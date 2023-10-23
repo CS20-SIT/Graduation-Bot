@@ -12,3 +12,10 @@ export class LineImageMessage extends LineMessage {
 	originalContentUrl: string
 	previewImageUrl: string
 }
+
+export class LineLocationMessage extends LineMessage {
+	latitude: number
+	longitude: number
+	address: string
+	title: string
+}

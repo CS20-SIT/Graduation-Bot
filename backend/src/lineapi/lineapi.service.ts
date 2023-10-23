@@ -72,7 +72,9 @@ export class LineApiService {
 			)
 		} catch (exception) {
 			Logger.error(
-				`Failed to broadcast message due to: ${exception.response.data.message} botUserId= ${botUserId}`
+				`Failed to broadcast message due to: ${JSON.stringify(
+					exception.response.data
+				)} botUserId= ${botUserId}`
 			)
 		}
 	}

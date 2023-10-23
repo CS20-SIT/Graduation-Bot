@@ -3,7 +3,11 @@ import { LocationMessage, MessageType, WebhookEvent } from '../model/webhookReqD
 import { IMessageHandler } from './IMessageHandler'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { Logger } from '@nestjs/common'
-import { LineLocationMessage } from 'src/lineapi/model/message'
+import { LineLocationMessage, LineTextMessage } from 'src/lineapi/model/message'
+import { Location } from '@prisma/client'
+import * as dayjs from 'dayjs'
+import * as utc from 'dayjs/plugin/utc'
+dayjs.extend(utc)
 
 export class OwnerLocationMessageEventHandler implements IMessageHandler {
 	constructor(
@@ -17,23 +21,31 @@ export class OwnerLocationMessageEventHandler implements IMessageHandler {
 			return
 		}
 		const { channelAccessToken, id } = graduate
-		const { latitude, longitude } = event.message as LocationMessage
+		const { latitude, longitude, title } = event.message as LocationMessage
+		const dateTime = dayjs(event.timestamp)
+		const location: Location = {
+			latitude,
+			longitude,
+			title: title ?? `Graduate's location`,
+			address: `Graduate's location on ${dateTime.utcOffset(7).format('HH:mm')}`,
+			updatedAt: dateTime.toDate()
+		}
 
-		await Promise.all([
-			this.graduateService.setLatestLocationById(id, {
-				latitude,
-				longitude,
-				updatedAt: new Date(event.timestamp)
-			}),
+		await Promise.allSettled([
+			this.graduateService.setLatestLocationById(id, location),
 			this.lineApiService.broadcastMessage(
 				channelAccessToken,
 				[
 					{
+						type: MessageType.Text,
+						text: `Graduate location updated.`
+					} as LineTextMessage,
+					{
 						type: MessageType.Location,
-						title: "Graduate's location",
-						address: "Graduate's location",
+						latitude,
 						longitude,
-						latitude
+						title: location.title,
+						address: location.address
 					} as LineLocationMessage
 				],
 				botUserId

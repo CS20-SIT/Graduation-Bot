@@ -34,7 +34,8 @@ export class GraduateController {
 				displayName: userProfile.displayName,
 				pictureUrl: userProfile.pictureUrl,
 				botUserId: botInfo.userId,
-				attendeeIds: []
+				attendeeIds: [],
+				latestLocation: null
 			})
 		} catch (error) {
 			if (axios.isAxiosError(error)) {

@@ -1,4 +1,11 @@
-import { IsArray, IsBoolean, IsEnum, IsNumber, IsString } from 'class-validator'
+import {
+	IsArray,
+	IsBoolean,
+	IsEnum,
+	IsNumber,
+	IsOptional,
+	IsString
+} from 'class-validator'
 
 export class WebhookRequestDto {
 	@IsString()
@@ -66,6 +73,12 @@ export class LocationMessage extends WebhookMessage {
 	latitude: number
 	@IsNumber()
 	longitude: number
+	@IsOptional()
+	@IsString()
+	title: string
+	@IsOptional()
+	@IsString()
+	address: string
 }
 
 export class DeliveryContext {

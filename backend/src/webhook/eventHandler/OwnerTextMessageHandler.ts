@@ -23,6 +23,5 @@ export class OwnerTextMessageEventHandler implements IMessageHandler {
 			[{ type: MessageType.Text, text: message.text } as LineTextMessage],
 			botUserId
 		)
-		return
 	}
 }

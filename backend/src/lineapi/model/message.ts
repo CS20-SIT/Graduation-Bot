@@ -7,3 +7,8 @@ export class LineMessage {
 export class LineTextMessage extends LineMessage {
 	text: string
 }
+
+export class LineImageMessage extends LineMessage {
+	originalContentUrl: string
+	previewImageUrl: string
+}

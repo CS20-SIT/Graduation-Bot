@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import axios, { AxiosInstance } from 'axios'
 import { BotInfo } from './model/botInfo'
 import { UserProfile } from './model/userProfile'
 import { Readable } from 'stream'
+import { LineMessage } from './model/message'
 
 @Injectable()
 export class LineApiService {
@@ -50,5 +51,29 @@ export class LineApiService {
 			}
 		)
 		return data
+	}
+
+	async broadcastMessage(
+		channelAccessToken: string,
+		messages: Array<LineMessage>,
+		botUserId: string
+	): Promise<void> {
+		try {
+			await this.client.post(
+				'/message/broadcast',
+				{
+					messages
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${channelAccessToken}`
+					}
+				}
+			)
+		} catch (exception) {
+			Logger.error(
+				`Failed to broadcast message due to: ${exception.response.data.message} botUserId= ${botUserId}`
+			)
+		}
 	}
 }

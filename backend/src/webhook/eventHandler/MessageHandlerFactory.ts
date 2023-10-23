@@ -16,7 +16,10 @@ export class MessageHandlerFactory {
 		private graduateService: GraduateService
 	) {
 		this.messageHandlerMap = new Map<string, IMessageHandler>([
-			[this.getKey(true, MessageType.Text), new OwnerTextMessageEventHandler()],
+			[
+				this.getKey(true, MessageType.Text),
+				new OwnerTextMessageEventHandler(lineApiService, graduateService)
+			],
 			[
 				this.getKey(false, MessageType.Image),
 				new GuestImageMessageHandler(

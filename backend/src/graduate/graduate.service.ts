@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { Graduate } from '@prisma/client'
+import { Graduate, Location } from '@prisma/client'
 import { PrismaService } from 'src/prisma/prisma.service'
 
 @Injectable()
@@ -19,5 +19,12 @@ export class GraduateService {
 
 	async getGraduateByBotUserId(botUserId: string): Promise<Graduate> {
 		return this.prismaService.graduate.findUnique({ where: { botUserId } })
+	}
+
+	async setLatestLocationById(graduateId: string, location: Location) {
+		return this.prismaService.graduate.update({
+			where: { id: graduateId },
+			data: { latestLocation: location }
+		})
 	}
 }

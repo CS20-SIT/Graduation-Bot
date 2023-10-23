@@ -10,10 +10,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+type Location {
+  updatedAt DateTime @default(now())
+  latitude  Float
+  longitude Float
+  title     String
+  address   String
+}
+
 model Graduate {
-  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
-  lineUserId         String  @unique
-  studentId          String  @unique
+  id                 String    @id @default(auto()) @map("_id") @db.ObjectId
+  lineUserId         String    @unique
+  studentId          String    @unique
   firstName          String
   lastName           String
   nickName           String?
@@ -22,8 +30,9 @@ model Graduate {
   currentJob         String?
   currentCompany     String?
   fallbackMessage    String?
-  botUserId          String  @unique
+  botUserId          String    @unique
   channelAccessToken String
+  latestLocation     Location?
 
   displayName String?
   pictureUrl  String?

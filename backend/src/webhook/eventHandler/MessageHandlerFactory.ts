@@ -6,6 +6,8 @@ import { GuestImageMessageHandler } from './GuestImageMessageHandler'
 import { StorageService } from 'src/storage/storage.service'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { LineApiService } from 'src/lineapi/lineapi.service'
+import { OwnerImageMessageEventHandler } from './OwnerImageMessageHandler'
+import { OwnerLocationMessageEventHandler } from './OwnerLocationMessageHandler'
 
 @Injectable()
 export class MessageHandlerFactory {
@@ -16,7 +18,22 @@ export class MessageHandlerFactory {
 		private graduateService: GraduateService
 	) {
 		this.messageHandlerMap = new Map<string, IMessageHandler>([
-			[this.getKey(true, MessageType.Text), new OwnerTextMessageEventHandler()],
+			[
+				this.getKey(true, MessageType.Text),
+				new OwnerTextMessageEventHandler(lineApiService, graduateService)
+			],
+			[
+				this.getKey(true, MessageType.Image),
+				new OwnerImageMessageEventHandler(
+					storageService,
+					lineApiService,
+					graduateService
+				)
+			],
+			[
+				this.getKey(true, MessageType.Location),
+				new OwnerLocationMessageEventHandler(lineApiService, graduateService)
+			],
 			[
 				this.getKey(false, MessageType.Image),
 				new GuestImageMessageHandler(

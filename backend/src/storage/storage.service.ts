@@ -14,4 +14,13 @@ export class StorageService {
 	getObjectWriteStream(filePath: string): Writable {
 		return this.bucket.file(filePath).createWriteStream()
 	}
+
+	async getImageUrl(filePath: string): Promise<string> {
+		const [url] = await this.bucket.file(filePath).getSignedUrl({
+			version: 'v4',
+			action: 'read',
+			expires: Date.now() + 7 * 24 * 60 * 60 * 1000 // max expiry is 1 week
+		})
+		return url
+	}
 }

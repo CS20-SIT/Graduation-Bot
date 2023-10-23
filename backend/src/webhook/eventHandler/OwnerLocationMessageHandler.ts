@@ -1,11 +1,11 @@
 import { LineApiService } from 'src/lineapi/lineapi.service'
-import { MessageType, TextMessage, WebhookEvent } from '../model/webhookReqDto'
+import { LocationMessage, MessageType, WebhookEvent } from '../model/webhookReqDto'
 import { IMessageHandler } from './IMessageHandler'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { Logger } from '@nestjs/common'
-import { LineTextMessage } from 'src/lineapi/model/message'
+import { LineLocationMessage } from 'src/lineapi/model/message'
 
-export class OwnerTextMessageEventHandler implements IMessageHandler {
+export class OwnerLocationMessageEventHandler implements IMessageHandler {
 	constructor(
 		private lineApiService: LineApiService,
 		private graduateService: GraduateService
@@ -17,10 +17,19 @@ export class OwnerTextMessageEventHandler implements IMessageHandler {
 			return
 		}
 		const { channelAccessToken } = graduate
-		const message = event.message as TextMessage
+		const message = event.message as LocationMessage
+		// todo: save longtitude and latitude to DB, fetch latest location remark and send as address.
 		await this.lineApiService.broadcastMessage(
 			channelAccessToken,
-			[{ type: MessageType.Text, text: message.text } as LineTextMessage],
+			[
+				{
+					type: MessageType.Location,
+					title: "Graduate's location",
+					address: "Graduate's location",
+					longitude: message.longitude,
+					latitude: message.latitude
+				} as LineLocationMessage
+			],
 			botUserId
 		)
 	}

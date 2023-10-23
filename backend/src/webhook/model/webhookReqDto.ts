@@ -61,6 +61,13 @@ export class TextMessage extends WebhookMessage {
 	text: string
 }
 
+export class LocationMessage extends WebhookMessage {
+	@IsNumber()
+	latitude: number
+	@IsNumber()
+	longitude: number
+}
+
 export class DeliveryContext {
 	@IsBoolean()
 	isRedelivery: boolean

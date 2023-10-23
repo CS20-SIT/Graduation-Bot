@@ -30,7 +30,6 @@ export class OwnerLocationMessageEventHandler implements IMessageHandler {
 			address: `Graduate's location on ${dateTime.utcOffset(7).format('HH:mm')}`,
 			updatedAt: dateTime.toDate()
 		}
-		const preLocationText = ` ${nickName ?? 'บัณฑิต'}อัพเดทตำแหน่งล่าสุด`
 
 		await Promise.allSettled([
 			this.graduateService.setLatestLocationById(id, location),
@@ -39,7 +38,7 @@ export class OwnerLocationMessageEventHandler implements IMessageHandler {
 				[
 					{
 						type: MessageType.Text,
-						text: preLocationText
+						text: `${nickName ?? 'บัณฑิต'}อัพเดทตำแหน่งล่าสุด`
 					} as LineTextMessage,
 					{
 						type: MessageType.Location,

@@ -16,21 +16,28 @@ export class OwnerLocationMessageEventHandler implements IMessageHandler {
 			Logger.error(`Graduate not found: botUserId=${botUserId}`)
 			return
 		}
-		const { channelAccessToken } = graduate
-		const message = event.message as LocationMessage
-		// todo: save longtitude and latitude to DB, fetch latest location remark and send as address.
-		await this.lineApiService.broadcastMessage(
-			channelAccessToken,
-			[
-				{
-					type: MessageType.Location,
-					title: "Graduate's location",
-					address: "Graduate's location",
-					longitude: message.longitude,
-					latitude: message.latitude
-				} as LineLocationMessage
-			],
-			botUserId
-		)
+		const { channelAccessToken, id } = graduate
+		const { latitude, longitude } = event.message as LocationMessage
+
+		await Promise.all([
+			this.graduateService.setLatestLocationById(id, {
+				latitude,
+				longitude,
+				updatedAt: new Date(event.timestamp)
+			}),
+			this.lineApiService.broadcastMessage(
+				channelAccessToken,
+				[
+					{
+						type: MessageType.Location,
+						title: "Graduate's location",
+						address: "Graduate's location",
+						longitude,
+						latitude
+					} as LineLocationMessage
+				],
+				botUserId
+			)
+		])
 	}
 }

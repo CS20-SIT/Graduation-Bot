@@ -20,7 +20,7 @@ export class OwnerLocationMessageEventHandler implements IMessageHandler {
 			Logger.error(`Graduate not found: botUserId=${botUserId}`)
 			return
 		}
-		const { channelAccessToken, id } = graduate
+		const { channelAccessToken, id, nickName } = graduate
 		const { latitude, longitude, title } = event.message as LocationMessage
 		const dateTime = dayjs(event.timestamp)
 		const location: Location = {
@@ -30,6 +30,7 @@ export class OwnerLocationMessageEventHandler implements IMessageHandler {
 			address: `Graduate's location on ${dateTime.utcOffset(7).format('HH:mm')}`,
 			updatedAt: dateTime.toDate()
 		}
+		const preLocationText = ` ${nickName ?? 'บัณฑิต'}อัพเดทตำแหน่งล่าสุด`
 
 		await Promise.allSettled([
 			this.graduateService.setLatestLocationById(id, location),
@@ -38,7 +39,7 @@ export class OwnerLocationMessageEventHandler implements IMessageHandler {
 				[
 					{
 						type: MessageType.Text,
-						text: `Graduate location updated.`
+						text: preLocationText
 					} as LineTextMessage,
 					{
 						type: MessageType.Location,

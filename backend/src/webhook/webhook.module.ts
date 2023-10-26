@@ -6,10 +6,11 @@ import { WebhookController } from './webhook.controller'
 import { StorageModule } from 'src/storage/storage.module'
 import { LineApiModule } from 'src/lineapi/lineapi.module'
 import { GraduateModule } from 'src/graduate/graduate.module'
+import { IntentHandlerFactory } from './intentHandler/IntentHandlerFactory'
 
 @Module({
 	imports: [PrismaModule, StorageModule, LineApiModule, GraduateModule],
-	providers: [WebhookService, MessageHandlerFactory],
+	providers: [WebhookService, MessageHandlerFactory, IntentHandlerFactory],
 	controllers: [WebhookController],
 	exports: []
 })

@@ -1,11 +1,10 @@
 import { LineApiService } from 'src/lineapi/lineapi.service'
-import { MessageType, TextMessage, WebhookEvent } from '../model/webhookReqDto'
+import { WebhookEvent } from '../model/webhookReqDto'
 import { MessageHandler } from './MessageHandler'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { Logger } from '@nestjs/common'
-import { LineTextMessage } from 'src/lineapi/model/message'
 
-export class OwnerTextMessageEventHandler implements MessageHandler {
+export class FallbackMessageEventHandler implements MessageHandler {
 	constructor(
 		private lineApiService: LineApiService,
 		private graduateService: GraduateService
@@ -17,11 +16,9 @@ export class OwnerTextMessageEventHandler implements MessageHandler {
 			return
 		}
 		const { channelAccessToken } = graduate
-		const message = (event.message as TextMessage).text
-		await this.lineApiService.broadcastMessage(
+		await this.lineApiService.replyFallbackMessage(
 			channelAccessToken,
-			[{ type: MessageType.Text, text: message } as LineTextMessage],
-			botUserId
+			event.replyToken
 		)
 	}
 }

@@ -1,12 +1,12 @@
 import { StorageService } from 'src/storage/storage.service'
 import { WebhookEvent } from '../model/webhookReqDto'
-import { IMessageHandler } from './IMessageHandler'
+import { MessageHandler } from './MessageHandler'
 import { LineApiService } from 'src/lineapi/lineapi.service'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { Logger } from '@nestjs/common'
 import { Readable, Writable } from 'stream'
 
-export class GuestImageMessageHandler implements IMessageHandler {
+export class GuestImageMessageHandler implements MessageHandler {
 	constructor(
 		private storageService: StorageService,
 		private lineApiService: LineApiService,

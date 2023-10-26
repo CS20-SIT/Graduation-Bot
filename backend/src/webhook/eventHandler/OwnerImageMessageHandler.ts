@@ -1,13 +1,13 @@
 import { LineApiService } from 'src/lineapi/lineapi.service'
 import { MessageType, WebhookEvent } from '../model/webhookReqDto'
-import { IMessageHandler } from './IMessageHandler'
+import { MessageHandler } from './MessageHandler'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { Logger } from '@nestjs/common'
 import { LineImageMessage } from 'src/lineapi/model/message'
 import { StorageService } from 'src/storage/storage.service'
 import { Readable, Writable } from 'stream'
 
-export class OwnerImageMessageEventHandler implements IMessageHandler {
+export class OwnerImageMessageEventHandler implements MessageHandler {
 	constructor(
 		private storageService: StorageService,
 		private lineApiService: LineApiService,

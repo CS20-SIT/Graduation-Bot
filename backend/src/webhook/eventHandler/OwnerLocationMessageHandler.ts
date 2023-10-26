@@ -1,6 +1,6 @@
 import { LineApiService } from 'src/lineapi/lineapi.service'
 import { LocationMessage, MessageType, WebhookEvent } from '../model/webhookReqDto'
-import { IMessageHandler } from './IMessageHandler'
+import { MessageHandler } from './MessageHandler'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { Logger } from '@nestjs/common'
 import { LineLocationMessage, LineTextMessage } from 'src/lineapi/model/message'
@@ -9,7 +9,7 @@ import * as dayjs from 'dayjs'
 import * as utc from 'dayjs/plugin/utc'
 dayjs.extend(utc)
 
-export class OwnerLocationMessageEventHandler implements IMessageHandler {
+export class OwnerLocationMessageEventHandler implements MessageHandler {
 	constructor(
 		private lineApiService: LineApiService,
 		private graduateService: GraduateService

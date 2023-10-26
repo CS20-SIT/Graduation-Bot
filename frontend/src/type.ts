@@ -13,7 +13,6 @@ export interface OnboardingData {
   honor: Honor | null;
   currentJob: string | null;
   currentCompany: string | null;
-  fallbackMessage: string | null;
   channelAccessToken: string;
 }
 export enum FieldType {

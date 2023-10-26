@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { IntentHandler } from './IntentHandler'
 import { GraduateInfoHandler } from './GraduateInfoHandler'
 import { MapHandler } from './MapHandler'
-import { TimelineHandler } from './TimeLineHandler'
+import { TimelineHandler } from './TimelineHandler'
 import { GraduateLocationHandler } from './GraduateLocationHandler'
 import { GraduateService } from 'src/graduate/graduate.service'
 

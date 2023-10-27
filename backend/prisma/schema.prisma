@@ -29,7 +29,6 @@ model Graduate {
   honor              String?
   currentJob         String?
   currentCompany     String?
-  fallbackMessage    String?
   botUserId          String    @unique
   channelAccessToken String
   latestLocation     Location?

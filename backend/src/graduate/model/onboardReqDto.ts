@@ -29,8 +29,5 @@ export class OnboardRequestDto {
 	@IsOptional()
 	currentCompany: string | null
 	@IsString()
-	@IsOptional()
-	fallbackMessage: string
-	@IsString()
 	channelAccessToken: string
 }

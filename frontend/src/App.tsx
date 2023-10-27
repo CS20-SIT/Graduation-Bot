@@ -14,7 +14,6 @@ const App = () => {
     honor: null,
     currentJob: null,
     currentCompany: null,
-    fallbackMessage: "",
     channelAccessToken: "",
   };
   const [data, setData] = useState<OnboardingData>(defaultOnboardingData);
@@ -94,10 +93,6 @@ const App = () => {
       name: "channelAccessToken",
       type: FieldType.Text,
       required: true,
-    },
-    {
-      name: "fallbackMessage",
-      type: FieldType.Text,
     },
   ];
   const getLabel = (field: Field) => {
@@ -183,8 +178,6 @@ const App = () => {
       honor: data.honor === Honor.None ? null : data.honor,
       currentJob: data.currentJob === "" ? null : data.currentJob,
       currentCompany: data.currentCompany === "" ? null : data.currentCompany,
-      fallbackMessage:
-        data.fallbackMessage === "" ? null : data.fallbackMessage,
     };
   };
   const handleSubmit = () => {

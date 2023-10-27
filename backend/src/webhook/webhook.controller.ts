@@ -32,6 +32,9 @@ export class WebhookController {
 				if (!!messageHandler) {
 					await messageHandler.handle(event, botUserId)
 				} else {
+					const fallbackMessageHandler =
+						this.messageHandlerFactory.getFallbackMessageHandler()
+					fallbackMessageHandler.handle(event, botUserId)
 					Logger.log(
 						`Unsupported Message Type: isBotOwner=${isBotOwner}, messageType=${messageType}`
 					)

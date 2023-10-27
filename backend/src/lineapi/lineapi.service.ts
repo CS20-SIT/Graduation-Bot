@@ -1,9 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common'
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { BotInfo } from './model/botInfo'
 import { UserProfile } from './model/userProfile'
 import { Readable } from 'stream'
-import { LineMessage } from './model/message'
+import { LineMessage, LineTextMessage } from './model/message'
+import { MessageType } from 'src/webhook/model/webhookReqDto'
+import { fallbackMessage, quickReply } from 'src/constants'
 
 @Injectable()
 export class LineApiService {
@@ -17,11 +19,10 @@ export class LineApiService {
 	}
 
 	async getBotInfo(channelAccessToken: string): Promise<BotInfo> {
-		const { data } = await this.client.get<BotInfo>('/info', {
-			headers: {
-				Authorization: `Bearer ${channelAccessToken}`
-			}
-		})
+		const { data } = await this.client.get<BotInfo>(
+			'/info',
+			this.getHeader(channelAccessToken)
+		)
 		return data
 	}
 
@@ -29,11 +30,10 @@ export class LineApiService {
 		channelAccessToken: string,
 		userId: string
 	): Promise<UserProfile> {
-		const { data } = await this.client.get<UserProfile>(`/profile/${userId}`, {
-			headers: {
-				Authorization: `Bearer ${channelAccessToken}`
-			}
-		})
+		const { data } = await this.client.get<UserProfile>(
+			`/profile/${userId}`,
+			this.getHeader(channelAccessToken)
+		)
 		return data
 	}
 
@@ -44,13 +44,50 @@ export class LineApiService {
 		const { data } = await this.contentClient.get<Readable>(
 			`/message/${messageId}/content`,
 			{
-				headers: {
-					Authorization: `Bearer ${channelAccessToken}`
-				},
+				...this.getHeader(channelAccessToken),
 				responseType: 'stream'
 			}
 		)
 		return data
+	}
+
+	async replyMessage(
+		channelAccessToken: string,
+		messages: Array<LineMessage>,
+		replyToken: string
+	): Promise<void> {
+		try {
+			await this.client.post(
+				'/message/reply',
+				{
+					messages,
+					replyToken
+				},
+				this.getHeader(channelAccessToken)
+			)
+		} catch (exception) {
+			Logger.error(
+				`Failed to broadcast message due to: ${JSON.stringify(
+					exception.response.data
+				)} replyToken= ${replyToken}`
+			)
+		}
+	}
+
+	async replyFallbackMessage(
+		channelAccessToken: string,
+		replyToken: string
+	): Promise<void> {
+		const fallbackMessages = [
+			{
+				type: MessageType.Text,
+				text: fallbackMessage,
+				quickReply: {
+					items: quickReply
+				}
+			} as LineTextMessage
+		]
+		await this.replyMessage(channelAccessToken, fallbackMessages, replyToken)
 	}
 
 	async broadcastMessage(
@@ -64,11 +101,7 @@ export class LineApiService {
 				{
 					messages
 				},
-				{
-					headers: {
-						Authorization: `Bearer ${channelAccessToken}`
-					}
-				}
+				this.getHeader(channelAccessToken)
 			)
 		} catch (exception) {
 			Logger.error(
@@ -76,6 +109,14 @@ export class LineApiService {
 					exception.response.data
 				)} botUserId= ${botUserId}`
 			)
+		}
+	}
+
+	private getHeader(channelAccessToken: string): AxiosRequestConfig {
+		return {
+			headers: {
+				Authorization: `Bearer ${channelAccessToken}`
+			}
 		}
 	}
 }

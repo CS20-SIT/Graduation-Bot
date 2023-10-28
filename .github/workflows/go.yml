@@ -12,8 +12,8 @@ on:
 jobs:
   build:
     defaults:
-        run:
-          working-directory: media-uploader
+      run:
+        working-directory: media-uploader
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3

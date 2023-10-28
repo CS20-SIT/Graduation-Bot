@@ -14,7 +14,7 @@ func init() {
 	log.Init(os.Getenv("ENV") == "production")
 
 	lineApi := lineapi.NewHttpLineApi()
-	driveStorage := storage.NewGoogleDriveStorage("cscms-302604-5a60278be187.json")
+	driveStorage := storage.NewGoogleDriveStorage(os.Getenv("GCP_CRED_FILE_PATH"))
 
 	s := service.NewService(lineApi, driveStorage)
 	h := handler.NewHandler(s)

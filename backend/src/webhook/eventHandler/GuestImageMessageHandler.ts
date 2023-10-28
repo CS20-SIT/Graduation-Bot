@@ -1,4 +1,4 @@
-import { StorageService } from 'src/storage/storage.service'
+import { BucketStorageService } from 'src/storage/bucketStorage.service'
 import { WebhookEvent } from '../model/webhookReqDto'
 import { MessageHandler } from './MessageHandler'
 import { LineApiService } from 'src/lineapi/lineapi.service'
@@ -8,7 +8,7 @@ import { Readable, Writable } from 'stream'
 
 export class GuestImageMessageHandler implements MessageHandler {
 	constructor(
-		private storageService: StorageService,
+		private bucketStorageService: BucketStorageService,
 		private lineApiService: LineApiService,
 		private graduateService: GraduateService
 	) {}
@@ -25,7 +25,7 @@ export class GuestImageMessageHandler implements MessageHandler {
 			this.lineApiService.getUserProfile(channelAccessToken, event.source.userId)
 		])
 
-		const storageWriteStream = this.storageService.getObjectWriteStream(
+		const storageWriteStream = this.bucketStorageService.getObjectWriteStream(
 			`${id}_${firstName}/guest_pics/${guestProfile.displayName}_${event.timestamp}.jpg`
 		)
 		await this.pipeStreams(readStream, storageWriteStream)

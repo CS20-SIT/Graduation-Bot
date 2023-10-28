@@ -4,7 +4,7 @@ import { Storage, Bucket } from '@google-cloud/storage'
 import { Writable } from 'stream'
 
 @Injectable()
-export class StorageService {
+export class BucketStorageService {
 	private bucket: Bucket
 	constructor(private configService: ConfigService) {
 		const storage = new Storage()

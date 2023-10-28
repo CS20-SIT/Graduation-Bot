@@ -4,12 +4,12 @@ import { MessageHandler } from './MessageHandler'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { Logger } from '@nestjs/common'
 import { LineImageMessage } from 'src/lineapi/model/message'
-import { StorageService } from 'src/storage/storage.service'
+import { BucketStorageService } from 'src/storage/bucketStorage.service'
 import { Readable, Writable } from 'stream'
 
 export class OwnerImageMessageEventHandler implements MessageHandler {
 	constructor(
-		private storageService: StorageService,
+		private bucketStorageService: BucketStorageService,
 		private lineApiService: LineApiService,
 		private graduateService: GraduateService
 	) {}
@@ -26,9 +26,10 @@ export class OwnerImageMessageEventHandler implements MessageHandler {
 		)
 
 		const filePath = `${id}_${firstName}/owner_pics/${event.timestamp}.jpg`
-		const storageWriteStream = this.storageService.getObjectWriteStream(filePath)
+		const storageWriteStream =
+			this.bucketStorageService.getObjectWriteStream(filePath)
 		await this.pipeStreams(readStream, storageWriteStream)
-		const imageUrl = await this.storageService.getImageUrl(filePath)
+		const imageUrl = await this.bucketStorageService.getImageUrl(filePath)
 		await this.lineApiService.broadcastMessage(
 			channelAccessToken,
 			[

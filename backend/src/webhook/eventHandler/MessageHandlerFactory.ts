@@ -3,7 +3,7 @@ import { MessageType } from '../model/webhookReqDto'
 import { MessageHandler } from './MessageHandler'
 import { OwnerTextMessageEventHandler } from './OwnerTextMessageHandler'
 import { GuestImageMessageHandler } from './GuestImageMessageHandler'
-import { StorageService } from 'src/storage/storage.service'
+import { BucketStorageService } from 'src/storage/bucketStorage.service'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { LineApiService } from 'src/lineapi/lineapi.service'
 import { OwnerImageMessageEventHandler } from './OwnerImageMessageHandler'
@@ -17,7 +17,7 @@ export class MessageHandlerFactory {
 	private messageHandlerMap: Map<string, MessageHandler>
 	private fallbackMessageHandler: MessageHandler
 	constructor(
-		private storageService: StorageService,
+		private bucketStorageService: BucketStorageService,
 		private lineApiService: LineApiService,
 		private graduateService: GraduateService,
 		private intentHandlerFactory: IntentHandlerFactory
@@ -30,7 +30,7 @@ export class MessageHandlerFactory {
 			[
 				this.getKey(true, MessageType.Image),
 				new OwnerImageMessageEventHandler(
-					storageService,
+					bucketStorageService,
 					lineApiService,
 					graduateService
 				)
@@ -50,7 +50,7 @@ export class MessageHandlerFactory {
 			[
 				this.getKey(false, MessageType.Image),
 				new GuestImageMessageHandler(
-					storageService,
+					bucketStorageService,
 					lineApiService,
 					graduateService
 				)

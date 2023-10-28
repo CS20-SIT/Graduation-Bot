@@ -7,7 +7,7 @@ import { LineImageMessage } from 'src/lineapi/model/message'
 import { BucketStorageService } from 'src/storage/bucketStorage.service'
 import { Readable, Writable } from 'stream'
 import { ulid } from 'ulid'
-import mime from 'mime-types'
+import * as mime from 'mime-types'
 
 export class OwnerImageMessageEventHandler implements MessageHandler {
 	constructor(
@@ -26,6 +26,7 @@ export class OwnerImageMessageEventHandler implements MessageHandler {
 			channelAccessToken,
 			event.message.id
 		)
+
 		const extension = mime.extension(contentType)
 		const filePath = `${id}_${firstName}/owner_pics/${ulid()}.${extension}`
 

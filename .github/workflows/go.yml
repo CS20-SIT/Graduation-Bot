@@ -21,6 +21,7 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.21'
+        cache-dependency-path: media-uploader/go.sum
     - name: build
       run: go build
       
@@ -35,6 +36,6 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.21'
-
+        cache-dependency-path: media-uploader/go.sum
     - name: Test
       run: go test -v ./...

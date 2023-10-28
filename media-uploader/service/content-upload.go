@@ -2,12 +2,9 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"github.com/CS20-SIT/Graduation-Bot/media-uploader/log"
 	"github.com/CS20-SIT/Graduation-Bot/media-uploader/model"
 	"github.com/CS20-SIT/Graduation-Bot/media-uploader/storage"
-	"github.com/oklog/ulid/v2"
-	"mime"
 )
 
 func (s *service) UploadContent(msg model.UploadContentMessage) error {
@@ -32,20 +29,17 @@ func (s *service) UploadContent(msg model.UploadContentMessage) error {
 		s.logError("failed to get content data", msg.MessageID, err)
 		return err
 	}
+	defer content.Close()
 
-	extensions, err := mime.ExtensionsByType(contentType)
+	extension, err := s.utils.GetExtension(contentType)
 	if err != nil {
 		s.logError("failed to get file extension by content-type", msg.MessageID, err)
-		return nil
-	}
-	if extensions == nil {
-		s.logError("can't match content type to extension", msg.MessageID, err)
 		return nil
 	}
 
 	metadata := storage.UploadMetadata{
 		ParentFolder: msg.FolderID,
-		FileName:     fmt.Sprintf("%s_%s%s", msg.GuestDisplayName, ulid.Make().String(), extensions[len(extensions)-1]),
+		FileName:     s.utils.GenerateContentFileName(msg.GuestDisplayName, extension),
 		ContentType:  contentType,
 	}
 	if err := s.storage.Upload(metadata, content); err != nil {

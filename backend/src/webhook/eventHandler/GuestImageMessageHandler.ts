@@ -28,7 +28,7 @@ export class GuestImageMessageHandler implements MessageHandler {
 		const storageWriteStream = this.bucketStorageService.getObjectWriteStream(
 			`${id}_${firstName}/guest_pics/${guestProfile.displayName}_${event.timestamp}.jpg`
 		)
-		await this.pipeStreams(readStream, storageWriteStream)
+		await this.pipeStreams(readStream.data, storageWriteStream)
 	}
 
 	pipeStreams(readStream: Readable, writeStream: Writable): Promise<void> {

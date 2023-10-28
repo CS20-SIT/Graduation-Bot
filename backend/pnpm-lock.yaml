@@ -43,6 +43,9 @@ dependencies:
   googleapis:
     specifier: ^128.0.0
     version: 128.0.0
+  mime-types:
+    specifier: ^2.1.35
+    version: 2.1.35
   reflect-metadata:
     specifier: ^0.1.13
     version: 0.1.13

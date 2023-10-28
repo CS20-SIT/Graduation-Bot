@@ -7,6 +7,7 @@ import { LineImageMessage } from 'src/lineapi/model/message'
 import { BucketStorageService } from 'src/storage/bucketStorage.service'
 import { Readable, Writable } from 'stream'
 import { ulid } from 'ulid'
+import mime from 'mime-types'
 
 export class OwnerImageMessageEventHandler implements MessageHandler {
 	constructor(
@@ -21,16 +22,18 @@ export class OwnerImageMessageEventHandler implements MessageHandler {
 			return
 		}
 		const { channelAccessToken, id, firstName } = graduate
-		const readStream = await this.lineApiService.getContentStream(
+		const { data, contentType } = await this.lineApiService.getContentStream(
 			channelAccessToken,
 			event.message.id
 		)
+		const extension = mime.extension(contentType)
+		const filePath = `${id}_${firstName}/owner_pics/${ulid()}.${extension}`
 
-		const filePath = `${id}_${firstName}/owner_pics/${ulid()}.jpg`
 		const storageWriteStream =
 			this.bucketStorageService.getObjectWriteStream(filePath)
-		await this.pipeStreams(readStream, storageWriteStream)
+		await this.pipeStreams(data, storageWriteStream)
 		const imageUrl = await this.bucketStorageService.getImageUrl(filePath)
+
 		await this.lineApiService.broadcastMessage(
 			channelAccessToken,
 			[

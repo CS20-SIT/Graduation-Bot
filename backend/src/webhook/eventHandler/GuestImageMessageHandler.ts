@@ -1,16 +1,16 @@
-import { BucketStorageService } from 'src/storage/bucketStorage.service'
 import { WebhookEvent } from '../model/webhookReqDto'
 import { MessageHandler } from './MessageHandler'
 import { LineApiService } from 'src/lineapi/lineapi.service'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { Logger } from '@nestjs/common'
 import { Readable, Writable } from 'stream'
+import { PubsubService } from 'src/pubsub/pubsub.service'
 
 export class GuestImageMessageHandler implements MessageHandler {
 	constructor(
-		private bucketStorageService: BucketStorageService,
 		private lineApiService: LineApiService,
-		private graduateService: GraduateService
+		private graduateService: GraduateService,
+		private pubsubService: PubsubService
 	) {}
 
 	async handle(event: WebhookEvent, botUserId: string): Promise<void> {
@@ -19,16 +19,19 @@ export class GuestImageMessageHandler implements MessageHandler {
 			Logger.error(`Graduate not found: botUserId=${botUserId}`)
 			return
 		}
-		const { channelAccessToken, id, firstName } = graduate
-		const [readStream, guestProfile] = await Promise.all([
-			this.lineApiService.getContentStream(channelAccessToken, event.message.id),
-			this.lineApiService.getUserProfile(channelAccessToken, event.source.userId)
-		])
-
-		const storageWriteStream = this.bucketStorageService.getObjectWriteStream(
-			`${id}_${firstName}/guest_pics/${guestProfile.displayName}_${event.timestamp}.jpg`
+		const { channelAccessToken, mediaDrive } = graduate
+		const guestProfile = await this.lineApiService.getUserProfile(
+			channelAccessToken,
+			event.source.userId
 		)
-		await this.pipeStreams(readStream.data, storageWriteStream)
+
+		await this.pubsubService.publishGuestMediaMessage({
+			channelAccessToken,
+			messageId: event.message.id,
+			timestamp: event.timestamp,
+			guestDisplayName: guestProfile.displayName,
+			folderId: mediaDrive.parentFolderId
+		})
 	}
 
 	pipeStreams(readStream: Readable, writeStream: Writable): Promise<void> {

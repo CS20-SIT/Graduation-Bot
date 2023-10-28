@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { MessageType } from '../model/webhookReqDto'
 import { MessageHandler } from './MessageHandler'
 import { OwnerTextMessageEventHandler } from './OwnerTextMessageHandler'
-import { GuestImageMessageHandler } from './GuestImageMessageHandler'
+import { GuestContentMessageHandler } from './GuestContentMessageHandler'
 import { BucketStorageService } from 'src/storage/bucketStorage.service'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { LineApiService } from 'src/lineapi/lineapi.service'
@@ -51,7 +51,15 @@ export class MessageHandlerFactory {
 			],
 			[
 				this.getKey(false, MessageType.Image),
-				new GuestImageMessageHandler(
+				new GuestContentMessageHandler(
+					lineApiService,
+					graduateService,
+					pubsubService
+				)
+			],
+			[
+				this.getKey(false, MessageType.Video),
+				new GuestContentMessageHandler(
 					lineApiService,
 					graduateService,
 					pubsubService

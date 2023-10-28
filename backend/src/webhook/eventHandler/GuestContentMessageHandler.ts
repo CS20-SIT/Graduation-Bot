@@ -3,10 +3,9 @@ import { MessageHandler } from './MessageHandler'
 import { LineApiService } from 'src/lineapi/lineapi.service'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { Logger } from '@nestjs/common'
-import { Readable, Writable } from 'stream'
 import { PubsubService } from 'src/pubsub/pubsub.service'
 
-export class GuestImageMessageHandler implements MessageHandler {
+export class GuestContentMessageHandler implements MessageHandler {
 	constructor(
 		private lineApiService: LineApiService,
 		private graduateService: GraduateService,
@@ -31,12 +30,6 @@ export class GuestImageMessageHandler implements MessageHandler {
 			timestamp: event.timestamp,
 			guestDisplayName: guestProfile.displayName,
 			folderId: mediaDrive.parentFolderId
-		})
-	}
-
-	pipeStreams(readStream: Readable, writeStream: Writable): Promise<void> {
-		return new Promise((resolve, reject) => {
-			readStream.pipe(writeStream).on('finish', resolve).on('error', reject)
 		})
 	}
 }

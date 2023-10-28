@@ -18,7 +18,7 @@ steps:
           --timeout=540s \
           --trigger-topic=cs20-graduation-guest-media \
           --trigger-location=asia-southeast1 \
-          --trigger-service-account=${_RUN_SERVICE_ACCOUNT} \
+          --trigger-service-account=${_TRIGGER_SERVICE_ACCOUNT} \
           --retry \
           --set-env-vars=ENV=production
 

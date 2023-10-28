@@ -127,6 +127,6 @@ func getInvalidRequestEventData() event.Event {
 
 func getInvalidEventData() event.Event {
 	e := event.New()
-	_ = e.SetData("application/json", "not valid data")
+	_ = e.SetData("application/json", "invalid data")
 	return e
 }

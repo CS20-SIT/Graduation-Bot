@@ -4,12 +4,14 @@ import { MessageHandler } from './MessageHandler'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { Logger } from '@nestjs/common'
 import { LineImageMessage } from 'src/lineapi/model/message'
-import { StorageService } from 'src/storage/storage.service'
+import { BucketStorageService } from 'src/storage/bucketStorage.service'
 import { Readable, Writable } from 'stream'
+import { ulid } from 'ulid'
+import * as mime from 'mime-types'
 
 export class OwnerImageMessageEventHandler implements MessageHandler {
 	constructor(
-		private storageService: StorageService,
+		private bucketStorageService: BucketStorageService,
 		private lineApiService: LineApiService,
 		private graduateService: GraduateService
 	) {}
@@ -20,15 +22,19 @@ export class OwnerImageMessageEventHandler implements MessageHandler {
 			return
 		}
 		const { channelAccessToken, id, firstName } = graduate
-		const readStream = await this.lineApiService.getContentStream(
+		const { data, contentType } = await this.lineApiService.getContentStream(
 			channelAccessToken,
 			event.message.id
 		)
 
-		const filePath = `${id}_${firstName}/owner_pics/${event.timestamp}.jpg`
-		const storageWriteStream = this.storageService.getObjectWriteStream(filePath)
-		await this.pipeStreams(readStream, storageWriteStream)
-		const imageUrl = await this.storageService.getImageUrl(filePath)
+		const extension = mime.extension(contentType)
+		const filePath = `${id}_${firstName}/owner_pics/${ulid()}.${extension}`
+
+		const storageWriteStream =
+			this.bucketStorageService.getObjectWriteStream(filePath)
+		await this.pipeStreams(data, storageWriteStream)
+		const imageUrl = await this.bucketStorageService.getImageUrl(filePath)
+
 		await this.lineApiService.broadcastMessage(
 			channelAccessToken,
 			[

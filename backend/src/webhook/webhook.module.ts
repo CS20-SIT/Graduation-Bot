@@ -7,9 +7,10 @@ import { StorageModule } from 'src/storage/storage.module'
 import { LineApiModule } from 'src/lineapi/lineapi.module'
 import { GraduateModule } from 'src/graduate/graduate.module'
 import { IntentHandlerFactory } from './intentHandler/IntentHandlerFactory'
+import { PubsubModule } from 'src/pubsub/pubsub.module'
 
 @Module({
-	imports: [PrismaModule, StorageModule, LineApiModule, GraduateModule],
+	imports: [PrismaModule, StorageModule, LineApiModule, GraduateModule, PubsubModule],
 	providers: [WebhookService, MessageHandlerFactory, IntentHandlerFactory],
 	controllers: [WebhookController],
 	exports: []

@@ -10,6 +10,7 @@ import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { WebhookModule } from './webhook/webhook.module'
 import { StorageModule } from './storage/storage.module';
+import { PubsubModule } from './pubsub/pubsub.module';
 
 @Module({
 	imports: [
@@ -24,7 +25,8 @@ import { StorageModule } from './storage/storage.module';
 		ServeStaticModule.forRoot({
 			rootPath: join(__dirname, '..', 'client')
 		}),
-		StorageModule
+		StorageModule,
+		PubsubModule
 	],
 	controllers: [AppController],
 	providers: [AppService, PrismaService],

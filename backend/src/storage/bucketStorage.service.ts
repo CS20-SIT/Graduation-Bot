@@ -4,10 +4,12 @@ import { Storage, Bucket } from '@google-cloud/storage'
 import { Writable } from 'stream'
 
 @Injectable()
-export class StorageService {
+export class BucketStorageService {
 	private bucket: Bucket
 	constructor(private configService: ConfigService) {
-		const storage = new Storage()
+		const storage = new Storage({
+			keyFilename: this.configService.get('GCS_KEY_FILE_PATH', undefined)
+		})
 		this.bucket = storage.bucket(this.configService.get('GCS_BUCKET_NAME'))
 	}
 

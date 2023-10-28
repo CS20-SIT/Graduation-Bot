@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { MessageType } from '../model/webhookReqDto'
 import { MessageHandler } from './MessageHandler'
 import { OwnerTextMessageEventHandler } from './OwnerTextMessageHandler'
-import { GuestImageMessageHandler } from './GuestImageMessageHandler'
-import { StorageService } from 'src/storage/storage.service'
+import { GuestContentMessageHandler } from './GuestContentMessageHandler'
+import { BucketStorageService } from 'src/storage/bucketStorage.service'
 import { GraduateService } from 'src/graduate/graduate.service'
 import { LineApiService } from 'src/lineapi/lineapi.service'
 import { OwnerImageMessageEventHandler } from './OwnerImageMessageHandler'
@@ -11,17 +11,24 @@ import { OwnerLocationMessageEventHandler } from './OwnerLocationMessageHandler'
 import { GuestTextMessageEventHandler } from './GuestTextMessageHandler'
 import { FallbackMessageEventHandler } from './FallbackMessageHandler'
 import { IntentHandlerFactory } from '../intentHandler/IntentHandlerFactory'
+import { PubsubService } from 'src/pubsub/pubsub.service'
 
 @Injectable()
 export class MessageHandlerFactory {
 	private messageHandlerMap: Map<string, MessageHandler>
 	private fallbackMessageHandler: MessageHandler
 	constructor(
-		private storageService: StorageService,
+		private bucketStorageService: BucketStorageService,
 		private lineApiService: LineApiService,
 		private graduateService: GraduateService,
-		private intentHandlerFactory: IntentHandlerFactory
+		private intentHandlerFactory: IntentHandlerFactory,
+		private pubsubService: PubsubService
 	) {
+		const guestContentMessageHandler = new GuestContentMessageHandler(
+			lineApiService,
+			graduateService,
+			pubsubService
+		)
 		this.messageHandlerMap = new Map<string, MessageHandler>([
 			[
 				this.getKey(true, MessageType.Text),
@@ -30,7 +37,7 @@ export class MessageHandlerFactory {
 			[
 				this.getKey(true, MessageType.Image),
 				new OwnerImageMessageEventHandler(
-					storageService,
+					bucketStorageService,
 					lineApiService,
 					graduateService
 				)
@@ -47,14 +54,8 @@ export class MessageHandlerFactory {
 					intentHandlerFactory
 				)
 			],
-			[
-				this.getKey(false, MessageType.Image),
-				new GuestImageMessageHandler(
-					storageService,
-					lineApiService,
-					graduateService
-				)
-			]
+			[this.getKey(false, MessageType.Image), guestContentMessageHandler],
+			[this.getKey(false, MessageType.Video), guestContentMessageHandler]
 		])
 		this.fallbackMessageHandler = new FallbackMessageEventHandler(
 			lineApiService,

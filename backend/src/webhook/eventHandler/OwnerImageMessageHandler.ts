@@ -6,6 +6,7 @@ import { Logger } from '@nestjs/common'
 import { LineImageMessage } from 'src/lineapi/model/message'
 import { BucketStorageService } from 'src/storage/bucketStorage.service'
 import { Readable, Writable } from 'stream'
+import { ulid } from 'ulid'
 
 export class OwnerImageMessageEventHandler implements MessageHandler {
 	constructor(
@@ -25,7 +26,7 @@ export class OwnerImageMessageEventHandler implements MessageHandler {
 			event.message.id
 		)
 
-		const filePath = `${id}_${firstName}/owner_pics/${event.timestamp}.jpg`
+		const filePath = `${id}_${firstName}/owner_pics/${ulid()}.jpg`
 		const storageWriteStream =
 			this.bucketStorageService.getObjectWriteStream(filePath)
 		await this.pipeStreams(readStream, storageWriteStream)

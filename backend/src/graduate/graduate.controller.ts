@@ -31,7 +31,7 @@ export class GraduateController {
 				this.lineApiService.getUserProfile(channelAccessToken, lineUserId)
 			])
 			const folderId = await this.driveStorageService.createEmptyFolder(
-				`${botInfo.displayName}_${body.firstName}_media`
+				`${userProfile.displayName}_${body.firstName}_media`
 			)
 			const mediaFolderLink = await this.driveStorageService.getSharedLink(folderId)
 			return await this.graduateService.createGradute({

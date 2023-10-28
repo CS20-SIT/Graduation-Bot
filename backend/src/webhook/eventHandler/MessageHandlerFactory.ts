@@ -24,6 +24,11 @@ export class MessageHandlerFactory {
 		private intentHandlerFactory: IntentHandlerFactory,
 		private pubsubService: PubsubService
 	) {
+		const guestContentMessageHandler = new GuestContentMessageHandler(
+			lineApiService,
+			graduateService,
+			pubsubService
+		)
 		this.messageHandlerMap = new Map<string, MessageHandler>([
 			[
 				this.getKey(true, MessageType.Text),
@@ -49,22 +54,8 @@ export class MessageHandlerFactory {
 					intentHandlerFactory
 				)
 			],
-			[
-				this.getKey(false, MessageType.Image),
-				new GuestContentMessageHandler(
-					lineApiService,
-					graduateService,
-					pubsubService
-				)
-			],
-			[
-				this.getKey(false, MessageType.Video),
-				new GuestContentMessageHandler(
-					lineApiService,
-					graduateService,
-					pubsubService
-				)
-			]
+			[this.getKey(false, MessageType.Image), guestContentMessageHandler],
+			[this.getKey(false, MessageType.Video), guestContentMessageHandler]
 		])
 		this.fallbackMessageHandler = new FallbackMessageEventHandler(
 			lineApiService,

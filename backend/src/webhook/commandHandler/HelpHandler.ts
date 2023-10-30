@@ -6,8 +6,12 @@ import { quickReply } from 'src/constants'
 
 export class HelpHandler implements CommandHandler {
 	constructor(private lineApiService: LineApiService) {}
-	async handle(channelAccessToken: string, botUserId: string): Promise<void> {
-		await this.lineApiService.broadcastMessage(
+	async handle(
+		channelAccessToken: string,
+		botUserId: string,
+		replyToken: string
+	): Promise<void> {
+		await this.lineApiService.replyMessage(
 			channelAccessToken,
 			[
 				{
@@ -18,7 +22,7 @@ export class HelpHandler implements CommandHandler {
 					}
 				} as LineTextMessage
 			],
-			botUserId
+			replyToken
 		)
 	}
 }

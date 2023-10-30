@@ -21,6 +21,7 @@ export class OwnerTextMessageEventHandler implements MessageHandler {
 			return
 		}
 		const { channelAccessToken } = graduate
+		const replyToken = event.replyToken
 		const message = (event.message as TextMessage).text
 		const isCommandMessage = message.startsWith('/')
 		if (isCommandMessage) {
@@ -32,14 +33,18 @@ export class OwnerTextMessageEventHandler implements MessageHandler {
 					command as Command
 				)
 				if (!!commandHandler) {
-					await commandHandler.handle(channelAccessToken, botUserId, text)
+					await commandHandler.handle(
+						channelAccessToken,
+						botUserId,
+						replyToken,
+						text
+					)
 					return
 				}
 			}
 		}
 		const intentHandler = this.intentHandlerFactory.getIntentHandler(message)
 		if (!!intentHandler) {
-			const replyToken = event.replyToken
 			const messages = await intentHandler.getResponseMessages(botUserId)
 			await this.lineApiService.replyMessage(
 				channelAccessToken,

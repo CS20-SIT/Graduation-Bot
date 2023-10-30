@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common'
-import { StorageService } from './storage.service'
+import { BucketStorageService } from './bucketStorage.service'
 import { ConfigModule } from '@nestjs/config'
+import { DriveStorageService } from './driveStorage.service'
 
 @Module({
 	imports: [ConfigModule],
-	providers: [StorageService],
-	exports: [StorageService]
+	providers: [BucketStorageService, DriveStorageService],
+	exports: [BucketStorageService, DriveStorageService]
 })
 export class StorageModule {}

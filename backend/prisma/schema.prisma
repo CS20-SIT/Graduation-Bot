@@ -18,10 +18,15 @@ type Location {
   address   String
 }
 
+type MediaDrive {
+  parentFolderId String
+  sharedLink     String
+}
+
 model Graduate {
-  id                 String    @id @default(auto()) @map("_id") @db.ObjectId
-  lineUserId         String    @unique
-  studentId          String    @unique
+  id                 String      @id @default(auto()) @map("_id") @db.ObjectId
+  lineUserId         String      @unique
+  studentId          String      @unique
   firstName          String
   lastName           String
   nickName           String?
@@ -29,9 +34,10 @@ model Graduate {
   honor              String?
   currentJob         String?
   currentCompany     String?
-  botUserId          String    @unique
+  botUserId          String      @unique
   channelAccessToken String
   latestLocation     Location?
+  mediaDrive         MediaDrive?
 
   displayName String?
   pictureUrl  String?

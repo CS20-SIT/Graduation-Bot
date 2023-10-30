@@ -10,12 +10,14 @@ import { OnboardRequestDto } from './model/onboardReqDto'
 import { GraduateService } from './graduate.service'
 import { LineApiService } from 'src/lineapi/lineapi.service'
 import axios from 'axios'
+import { DriveStorageService } from 'src/storage/driveStorage.service'
 
 @Controller('graduate')
 export class GraduateController {
 	constructor(
 		private graduateService: GraduateService,
-		private lineApiService: LineApiService
+		private lineApiService: LineApiService,
+		private driveStorageService: DriveStorageService
 	) {}
 	@Post()
 	async onboard(@Body() body: OnboardRequestDto) {
@@ -28,6 +30,10 @@ export class GraduateController {
 				this.lineApiService.getBotInfo(channelAccessToken),
 				this.lineApiService.getUserProfile(channelAccessToken, lineUserId)
 			])
+			const folderId = await this.driveStorageService.createEmptyFolder(
+				`${userProfile.displayName}_${body.firstName}_media`
+			)
+			const mediaFolderLink = await this.driveStorageService.getSharedLink(folderId)
 			return await this.graduateService.createGradute({
 				...body,
 				id: new ObjectId().toHexString(),
@@ -35,7 +41,11 @@ export class GraduateController {
 				pictureUrl: userProfile.pictureUrl,
 				botUserId: botInfo.userId,
 				attendeeIds: [],
-				latestLocation: null
+				latestLocation: null,
+				mediaDrive: {
+					parentFolderId: folderId,
+					sharedLink: mediaFolderLink
+				}
 			})
 		} catch (error) {
 			if (axios.isAxiosError(error)) {

@@ -1,0 +1,27 @@
+steps:
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - '-c'
+      - |
+        gcloud functions deploy graduation-bot-media-uploader \
+          --entry-point=Main \
+          --runtime=go121 \
+          --gen2 \
+          --region=asia-southeast1 \
+          --min-instances=0 \
+          --max-instances=50 \
+          --memory=512Mi \
+          --no-allow-unauthenticated \
+          --ingress-settings=internal-only \
+          --run-service-account=${_RUN_SERVICE_ACCOUNT} \
+          --timeout=540s \
+          --trigger-topic=cs20-graduation-guest-media \
+          --trigger-location=asia-southeast1 \
+          --trigger-service-account=${_TRIGGER_SERVICE_ACCOUNT} \
+          --retry \
+          --set-env-vars=ENV=production
+    dir: media-uploader
+    entrypoint: bash
+timeout: 1800s
+options:
+  logging: CLOUD_LOGGING_ONLY

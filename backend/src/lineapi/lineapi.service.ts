@@ -6,6 +6,7 @@ import { Readable } from 'stream'
 import { LineMessage, LineTextMessage } from './model/message'
 import { MessageType } from 'src/webhook/model/webhookReqDto'
 import { fallbackMessage, quickReply } from 'src/constants'
+import { ContentStream } from './model/content'
 
 @Injectable()
 export class LineApiService {
@@ -40,15 +41,18 @@ export class LineApiService {
 	async getContentStream(
 		channelAccessToken: string,
 		messageId: string
-	): Promise<Readable> {
-		const { data } = await this.contentClient.get<Readable>(
+	): Promise<ContentStream> {
+		const { data, headers } = await this.contentClient.get<Readable>(
 			`/message/${messageId}/content`,
 			{
 				...this.getHeader(channelAccessToken),
 				responseType: 'stream'
 			}
 		)
-		return data
+		return {
+			data,
+			contentType: headers['content-type']
+		}
 	}
 
 	async replyMessage(

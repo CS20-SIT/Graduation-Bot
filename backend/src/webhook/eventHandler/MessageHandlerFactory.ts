@@ -11,6 +11,7 @@ import { OwnerLocationMessageEventHandler } from './OwnerLocationMessageHandler'
 import { GuestTextMessageEventHandler } from './GuestTextMessageHandler'
 import { FallbackMessageEventHandler } from './FallbackMessageHandler'
 import { IntentHandlerFactory } from '../intentHandler/IntentHandlerFactory'
+import { CommandHandlerFactory } from '../commandHandler/CommandHandlerFactory'
 import { PubsubService } from 'src/pubsub/pubsub.service'
 
 @Injectable()
@@ -21,6 +22,7 @@ export class MessageHandlerFactory {
 		private bucketStorageService: BucketStorageService,
 		private lineApiService: LineApiService,
 		private graduateService: GraduateService,
+		private commandHandlerFactory: CommandHandlerFactory,
 		private intentHandlerFactory: IntentHandlerFactory,
 		private pubsubService: PubsubService
 	) {
@@ -32,7 +34,12 @@ export class MessageHandlerFactory {
 		this.messageHandlerMap = new Map<string, MessageHandler>([
 			[
 				this.getKey(true, MessageType.Text),
-				new OwnerTextMessageEventHandler(lineApiService, graduateService)
+				new OwnerTextMessageEventHandler(
+					lineApiService,
+					graduateService,
+					commandHandlerFactory,
+					intentHandlerFactory
+				)
 			],
 			[
 				this.getKey(true, MessageType.Image),

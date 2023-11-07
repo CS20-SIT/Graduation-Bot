@@ -8,6 +8,7 @@ export class BroadcastHandler implements CommandHandler {
 	async handle(
 		channelAccessToken: string,
 		botUserId: string,
+		replyToken: string,
 		text: string
 	): Promise<void> {
 		await this.lineApiService.broadcastMessage(

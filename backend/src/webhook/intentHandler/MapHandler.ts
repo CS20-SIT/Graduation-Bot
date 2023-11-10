@@ -8,10 +8,8 @@ export class MapHandler implements IntentHandler {
 		return [
 			{
 				type: MessageType.Image,
-				previewImageUrl:
-					'https://www.kmutt.ac.th/wp-content/uploads/2021/01/Master-Plan.jpg',
-				originalContentUrl:
-					'https://www.kmutt.ac.th/wp-content/uploads/2021/01/Master-Plan.jpg',
+				previewImageUrl: 'https://img.cscms.me/JABjhw5ibNSplJr3s295.jpg',
+				originalContentUrl: 'https://img.cscms.me/JABjhw5ibNSplJr3s295.jpg',
 				quickReply: {
 					items: quickReply
 				}

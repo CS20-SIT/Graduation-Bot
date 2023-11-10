@@ -5,6 +5,7 @@ import { MapHandler } from './MapHandler'
 import { TimelineHandler } from './TimelineHandler'
 import { GraduateLocationHandler } from './GraduateLocationHandler'
 import { GraduateService } from 'src/graduate/graduate.service'
+import { HelpHandler } from './HelpHandler'
 
 @Injectable()
 export class IntentHandlerFactory {
@@ -14,7 +15,8 @@ export class IntentHandlerFactory {
 			['ข้อมูลของบัณฑิต', new GraduateInfoHandler(graduateService)],
 			['ตำแหน่งของบัณฑิต', new GraduateLocationHandler(graduateService)],
 			['กำหนดการ', new TimelineHandler()],
-			['แผนที่', new MapHandler()]
+			['แผนที่', new MapHandler()],
+			['/h', new HelpHandler()]
 		])
 	}
 	getIntentHandler(intent: string): IntentHandler {
